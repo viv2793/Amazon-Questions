@@ -14,3 +14,63 @@ Output:
 
 Solution:
 https://leetcode.com/discuss/interview-question/938623/amazon-sde-2-hyderabad-phone-screen/884182
+
+---------------------------------------------------------------------------------------------
+/******************************************************************************
+
+                              Online C++ Compiler.
+               Code, Compile, Run and Debug C++ program online.
+Write your code in this editor and press "Run" button to compile and execute it.
+
+*******************************************************************************/
+
+#include <bits/stdc++.h>
+
+using namespace std;
+
+int buildSubsetSumMatrix(vector<int>& nums, int target, int n, vector<vector<int>> &dp){
+    if(n == 0 && target != 0)
+        return 0;
+    if(target == 0)
+        return 1;
+    if(dp[n][target] != -1)
+        return dp[n][target];
+        
+    if(nums[n-1] <= target){
+        return dp[n][target] = buildSubsetSumMatrix(nums, target - nums[n-1], n-1, dp) || buildSubsetSumMatrix(nums, target, n-1, dp);
+    }
+    return dp[n][target] = buildSubsetSumMatrix(nums, target, n-1, dp);
+}
+
+vector<int> printSubset(vector<int> nums, vector<vector<int>>& dp, int target){
+    vector<int> res;
+    int n=nums.size();
+    for(int i=n; i>0; i--){
+        if(dp[i][target] != dp[i-1][target]){
+            res.push_back(nums[i-1]);
+            target = target - nums[i-1];
+        }
+    }
+    return res;
+}
+
+int main()
+{
+    vector<int> v = {1, 9, 8, 3, 6, 7, 5, 11, 12, 4};
+    int target = 14;
+    
+    vector<vector<int>> dp(v.size()+1, vector<int>(target+1, -1));
+    buildSubsetSumMatrix(v, target, v.size(), dp);
+    for(int i=0; i<dp.size(); i++){
+        for(int j=0; j<dp[0].size(); j++){
+            cout<<dp[i][j]<<" ";
+        }
+        cout<<endl;
+    }
+    vector<int> res = printSubset(v, dp, target);
+    cout<<"Hello World"<<endl;
+    for(int j=0; j<res.size(); j++){
+        cout<<res[j]<<" ";
+    }
+    return 0;
+}
